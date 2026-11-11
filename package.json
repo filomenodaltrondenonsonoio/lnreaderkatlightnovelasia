@@ -1,0 +1,21 @@
+{
+  "name": "lnreader-custom-plugins",
+  "version": "3.0.0",
+  "description": "Custom LNReader plugin repository: Kat Reading Cafe and LightNovelAsia",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build:compile": "tsc --project tsconfig.production.json",
+    "build:manifest": "node ./scripts/build-plugin-manifest.js",
+    "build": "npm run build:compile && npm run build:manifest",
+    "publish:plugins": "bash ./scripts/publish-plugins.sh"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "cheerio": "^1.0.0",
+    "terser": "^5.36.0",
+    "typescript": "~5.9.3"
+  }
+}

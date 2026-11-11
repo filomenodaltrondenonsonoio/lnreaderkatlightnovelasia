@@ -1,0 +1,45 @@
+name: Publish Plugins
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'plugins/**'
+      - 'public/**'
+      - 'package.json'
+      - 'scripts/**'
+      - '.github/workflows/publish-plugins.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Compile, build manifest and publish
+        run: npm run publish:plugins
