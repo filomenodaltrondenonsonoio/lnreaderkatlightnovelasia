@@ -34,7 +34,7 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
   name = 'LightNovelAsia';
   icon = 'src/en/lightnovelasia/icon.png';
   site = SITE;
-  version = '1.0.1';
+  version = '1.0.2';
 
   imageRequestInit: Plugin.ImageRequestInit = {
     headers: { Referer: SITE + '/' },
@@ -216,9 +216,14 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
         const locked = loginOnly || (c.coins || 0) > 0 || !released;
         if (locked && hideLocked) continue;
         const num = Number(c.chapter_number);
+        // Same link the website uses, kept after the id for "Open in browser".
+        const webPath =
+          c.chapter_number != null && c.chapter_number !== ''
+            ? encodeURIComponent(novelPath) + '-chapter-' + encodeURIComponent(String(c.chapter_number))
+            : 'novel/' + encodeURIComponent(novelPath) + '/chapter/' + c.id;
         chapters.push({
           name: (locked ? '🔒 ' : '') + (c.title || 'Chapter ' + c.chapter_number),
-          path: 'chapter/' + c.id,
+          path: 'chapter/' + c.id + '/' + webPath,
           releaseTime: c.release_date || undefined,
           chapterNumber: isNaN(num) ? undefined : num,
         });
@@ -231,7 +236,8 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
   }
 
   async parseChapter(chapterPath: string): Promise<string> {
-    const id = chapterPath.replace(/^chapter\//, '');
+    // Path is "chapter/<id>" (older versions) or "chapter/<id>/<web link>".
+    const id = chapterPath.split('/')[1] || '';
     if (!/^[0-9a-f-]{36}$/i.test(id)) throw new Error('Bad chapter path');
 
     // Metadata first, without content, so gated chapters are never requested.
@@ -277,7 +283,10 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
   }
 
   resolveUrl(path: string, isNovel?: boolean): string {
-    return isNovel ? SITE + '/series/' + path : SITE + '/series';
+    if (isNovel) return SITE + '/novel/' + encodeURIComponent(path);
+    const webPath = path.split('/').slice(2).join('/');
+    // Chapters saved by older versions have no web link stored.
+    return webPath ? SITE + '/' + webPath : SITE;
   }
 }
 
