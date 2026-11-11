@@ -34,7 +34,7 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
   name = 'LightNovelAsia';
   icon = 'src/en/lightnovelasia/icon.png';
   site = SITE;
-  version = '1.0.0';
+  version = '1.0.1';
 
   imageRequestInit: Plugin.ImageRequestInit = {
     headers: { Referer: SITE + '/' },
@@ -132,12 +132,20 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
     searchTerm: string,
     pageNo: number,
   ): Promise<Plugin.NovelItem[]> {
-    const term = searchTerm.replace(/[*,()%]/g, ' ').trim();
-    if (!term) return [];
-    const like = encodeURIComponent('*' + term + '*');
+    // Match word by word, ignoring punctuation and apostrophe style, so
+    // "don't be afraid princess" finds "Don't Be Afraid, Princess, ...".
+    const words = searchTerm
+      .split(/[\s,.!?:;"'`‘’“”()[\]{}*%\\\-–—]+/)
+      .filter(w => w.length > 1 || /[^\x00-\x7F]/.test(w));
+    if (!words.length) return [];
+    const like = (w: string) => encodeURIComponent('*' + w + '*');
+    const titleMatch = words.map(w => 'title.ilike.' + like(w)).join(',');
+    const originalMatch = words.map(w => 'original_title.ilike.' + like(w)).join(',');
+    // Slugs have no apostrophes, so "dont" still finds "Don't ...".
+    const slugMatch = words.map(w => 'slug.ilike.' + like(w)).join(',');
     const q =
       this.base() +
-      '&or=(title.ilike.' + like + ',original_title.ilike.' + like + ')' +
+      '&or=(and(' + titleMatch + '),and(' + originalMatch + '),and(' + slugMatch + '))' +
       '&order=total_views.desc&limit=' + PAGE_SIZE +
       '&offset=' + (pageNo - 1) * PAGE_SIZE;
     return this.toNovels(await this.api('/' + q));
