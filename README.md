@@ -17,7 +17,7 @@ note with the unlock date instead of text.
 2. The included GitHub Action (`Publish Plugins`) runs on push, type-checks, compiles and publishes to the
    branch `plugins/v3.0.0`. You can also run it manually from the Actions tab. No secrets are needed.
 3. In LNReader: **More → Settings → Browse → Plugin repositories → Add** and paste
-   `https://raw.githubusercontent.com/<your-user>/<your-repo>/plugins/v3.0.0/.dist/plugins.min.json`
+   `https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.dist/plugins.min.json`
 4. Open **Browse → Available**, install *Kat Reading Cafe*.
 
 Local build (optional): `npm install && npm run build` produces `.dist/plugins.min.json` and `.js/`.
