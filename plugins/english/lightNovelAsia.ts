@@ -34,7 +34,7 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
   name = 'LightNovelAsia';
   icon = 'src/en/lightnovelasia/icon.png';
   site = SITE;
-  version = '1.0.2';
+  version = '1.0.3';
 
   imageRequestInit: Plugin.ImageRequestInit = {
     headers: { Referer: SITE + '/' },
@@ -276,10 +276,26 @@ class LightNovelAsiaPlugin implements Plugin.PluginBase {
       .replace(/<(script|style|iframe)[\s\S]*?<\/\1>/gi, '')
       .replace(/\son\w+="[^"]*"/gi, '')
       .replace(/javascript:/gi, '');
+    html = this.toParagraphs(html);
     if (row.translator_note) {
-      html += '<hr><p><i>Translator note:</i></p>' + String(row.translator_note);
+      html +=
+        '<hr><p><i>Translator note:</i></p>' + this.toParagraphs(String(row.translator_note));
     }
     return html;
+  }
+
+  /**
+   * Most chapters are one <p> with a <br /> between lines, so the reader shows
+   * them with no spacing. Like the website, make every line its own paragraph.
+   */
+  private toParagraphs(html: string): string {
+    html = html.trim();
+    if (!/^<(p|div|h\d|blockquote|ul|ol|hr|table)[\s>/]/i.test(html)) {
+      html = '<p>' + html + '</p>';
+    }
+    return html
+      .replace(/(\s*<br\s*\/?>\s*)+/gi, '</p><p>')
+      .replace(/<p>\s*(&nbsp;| |\s)*<\/p>/gi, '');
   }
 
   resolveUrl(path: string, isNovel?: boolean): string {
