@@ -1,0 +1,29 @@
+[
+	{
+		"id": "katReadingCafe",
+		"name": "Kat Reading Cafe",
+		"site": "https://katreadingcafe.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/katReadingCafe.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/katreadingcafe/icon.png"
+	},
+	{
+		"id": "lightNovelAsia",
+		"name": "LightNovelAsia",
+		"site": "https://lightnovelasia.com",
+		"lang": "English",
+		"version": "1.0.3",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/lightNovelAsia.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/lightnovelasia/icon.png"
+	},
+	{
+		"id": "novelsHaven",
+		"name": "Novels Haven",
+		"site": "https://novelshaventranslations.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/novelsHaven.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/novelshaven/icon.png"
+	}
+]
