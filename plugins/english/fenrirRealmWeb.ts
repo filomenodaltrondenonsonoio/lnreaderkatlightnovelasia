@@ -1,4 +1,5 @@
 import { load as parseHTML } from 'cheerio';
+import * as fetchLib from '@libs/fetch';
 import { fetchApi } from '@libs/fetch';
 import { Plugin } from '@/types/plugin';
 import { NovelStatus } from '@libs/novelStatus';
@@ -10,15 +11,18 @@ import { storage } from '@libs/storage';
  * Fenrir Realm (https://fenrirealm.com), WebView edition.
  *
  * Browsing, search, novel details and chapter lists use the site's public API.
- * Chapter text is not fetched: the site only releases it to its own reader
- * page after a Cloudflare Turnstile check. Opening a chapter shows a short
- * note, and the WebView button opens that chapter on the site, where it is
- * read normally.
+ * Chapter text is read from the site's own reader page through the app's
+ * hidden WebView, when the app supports it (see readFromSitePage). Otherwise
+ * opening a chapter shows a short note, and the WebView button opens it on
+ * the site to read there.
  *
  * Separate id from the official "fenrir" plugin, so both can be installed
  * and official updates don't replace this one.
  */
 const SITE = 'https://fenrirealm.com';
+// Chapter paragraphs on the site's reader page.
+const READER_PARAGRAPHS =
+  '[id^="reader-area-"] p, .reader-area.touch-manipulation p, div.content-area p';
 
 type ApiNovel = {
   title: string;
@@ -44,7 +48,7 @@ class FenrirRealmWebPlugin implements Plugin.PluginBase {
   name = 'Fenrir Realm (WebView)';
   icon = 'src/en/fenrirrealmweb/icon.png';
   site = SITE;
-  version = '1.2.0';
+  version = '1.3.0';
 
   pluginSettings = {
     hideLocked: {
@@ -178,8 +182,51 @@ class FenrirRealmWebPlugin implements Plugin.PluginBase {
     return novel;
   }
 
+  /**
+   * Newer LNReader versions provide fetchViaWebview (lnreader/lnreader#2128):
+   * the app loads the chapter page in a hidden WebView, the site runs its own
+   * checks there like in a browser, and we read the finished page. Older app
+   * versions don't have it, and we fall back to the WebView note.
+   */
+  private async readFromSitePage(url: string): Promise<string | null> {
+    const fetchViaWebview = (
+      fetchLib as {
+        fetchViaWebview?: (
+          url: string,
+          options?: { waitForSelector?: string; timeoutMs?: number; settleMs?: number },
+        ) => Promise<{ ok: boolean; html: string }>;
+      }
+    ).fetchViaWebview;
+    if (typeof fetchViaWebview !== 'function') return null;
+    try {
+      const res = await fetchViaWebview(url, {
+        waitForSelector: READER_PARAGRAPHS,
+        timeoutMs: 15000,
+        settleMs: 400,
+      });
+      if (!res || !res.ok || !res.html) return null;
+      const $ = parseHTML(res.html);
+      // Only what the page shows to readers: skip text the site hides.
+      const html = $(READER_PARAGRAPHS)
+        .filter((_, el) => $(el).closest('[aria-hidden="true"]').length === 0)
+        .map((_, el) => {
+          const inner = ($(el).html() || '').trim();
+          return inner ? '<p>' + inner + '</p>' : '';
+        })
+        .get()
+        .filter(Boolean)
+        .join('\n');
+      if (!html || html.indexOf("Confirm you're human") >= 0) return null;
+      return html;
+    } catch {
+      return null;
+    }
+  }
+
   async parseChapter(chapterPath: string): Promise<string> {
     const url = this.resolveUrl(chapterPath);
+    const text = await this.readFromSitePage(url);
+    if (text) return text;
     return (
       '<p><b>Read this chapter in WebView.</b></p>' +
       '<p>Fenrir Realm only shows chapter text on its own reader page. Tap the ' +

@@ -24,8 +24,10 @@ The repository must stay public, or LNReader can't download the plugins.
 ## Fenrir Realm (WebView)
 
 Fenrir Realm only shows chapter text on its own reader page, after a Cloudflare check. This plugin handles
-browsing, search, your library and chapter lists in the app; opening a chapter shows a short note, and the
-WebView (globe) button opens that chapter on the site to read it. It has its own id (`fenrirRealmWeb`), so it
+browsing, search, your library and chapter lists in the app. For chapter text it uses LNReader's
+`fetchViaWebview` (proposed in lnreader/lnreader#2128, not in a released app yet): the app opens the chapter
+page in a hidden WebView, the site runs its own check, and the plugin reads the finished page. On app versions
+without it, opening a chapter shows a short note, and the WebView (globe) button opens it on the site. It has its own id (`fenrirRealmWeb`), so it
 can be installed next to the official Fenrir plugin and official updates won't replace it.
 
 ## Locked chapters
