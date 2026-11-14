@@ -1,4 +1,4 @@
-# LNReader plugins: Kat Reading Cafe and LightNovelAsia
+# LNReader plugins: Kat Reading Cafe, LightNovelAsia and Novels Haven
 
 A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 
@@ -6,6 +6,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 | --- | --- |
 | Kat Reading Cafe | https://katreadingcafe.com |
 | LightNovelAsia | https://lightnovelasia.com |
+| Novels Haven | https://novelshaventranslations.com |
 
 ## Install in LNReader
 
@@ -15,15 +16,15 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
    https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.dist/plugins.min.json
    ```
 
-2. Open **Browse → Available** and install *Kat Reading Cafe* and *LightNovelAsia*.
+2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia* and *Novels Haven*.
 
 The repository must stay public, or LNReader can't download the plugins.
 
 ## Locked chapters
 
-Chapters the sites sell or lock (coins, early access, login only) are **not** bypassed. In both plugins they
+Chapters the sites sell or lock (coins, premium, early access, login only) are **not** bypassed. In all plugins they
 show with a 🔒 prefix in the chapter list, and opening one shows a short note instead of the text. Each plugin
-has a "hide locked chapters" switch in its settings.
+has a switch in its settings to hide them.
 
 ## Updating the plugins
 
