@@ -1,4 +1,4 @@
-# LNReader plugins: Kat Reading Cafe, LightNovelAsia and Novels Haven
+# LNReader plugins: Kat Reading Cafe, LightNovelAsia, Novels Haven and Fenrir Realm
 
 A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 
@@ -7,6 +7,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 | Kat Reading Cafe | https://katreadingcafe.com |
 | LightNovelAsia | https://lightnovelasia.com |
 | Novels Haven | https://novelshaventranslations.com |
+| Fenrir Realm (WebView) | https://fenrirealm.com |
 
 ## Install in LNReader
 
@@ -16,9 +17,16 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
    https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.dist/plugins.min.json
    ```
 
-2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia* and *Novels Haven*.
+2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia*, *Novels Haven* and *Fenrir Realm (WebView)*.
 
 The repository must stay public, or LNReader can't download the plugins.
+
+## Fenrir Realm (WebView)
+
+Fenrir Realm only shows chapter text on its own reader page, after a Cloudflare check. This plugin handles
+browsing, search, your library and chapter lists in the app; opening a chapter shows a short note, and the
+WebView (globe) button opens that chapter on the site to read it. It has its own id (`fenrirRealmWeb`), so it
+can be installed next to the official Fenrir plugin and official updates won't replace it.
 
 ## Locked chapters
 
