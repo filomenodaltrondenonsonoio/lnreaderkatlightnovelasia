@@ -1,4 +1,4 @@
-# LNReader plugins: Kat Reading Cafe, LightNovelAsia, Novels Haven and Fenrir Realm
+# LNReader plugins: Kat Reading Cafe, LightNovelAsia, Novels Haven, Fenrir Realm and No Bad Novel
 
 A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 
@@ -8,6 +8,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 | LightNovelAsia | https://lightnovelasia.com |
 | Novels Haven | https://novelshaventranslations.com |
 | Fenrir Realm (WebView) | https://fenrirealm.com |
+| No Bad Novel | https://www.nobadnovel.com |
 
 ## Install in LNReader
 
@@ -17,7 +18,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
    https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.dist/plugins.min.json
    ```
 
-2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia*, *Novels Haven* and *Fenrir Realm (WebView)*.
+2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia*, *Novels Haven*, *Fenrir Realm (WebView)* and *No Bad Novel*.
 
 The repository must stay public, or LNReader can't download the plugins.
 
