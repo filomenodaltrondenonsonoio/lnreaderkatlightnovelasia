@@ -40,12 +40,25 @@ const LOCKED_NOTE =
   '<p><b>This is a premium chapter on Lunox Novels.</b> ' +
   'Open it on the website to unlock and read it.</p>';
 
+// The site's server can take many seconds per page, so search uses a saved
+// list of novels and the next chapter loads ahead of time.
+const INDEX_KEY = 'searchIndex';
+const INDEX_MAX_AGE = 24 * 60 * 60 * 1000;
+const INDEX_TRUSTED_AGE = 60 * 60 * 1000;
+const PRELOAD_MAX_AGE = 10 * 60 * 1000;
+
+type SearchIndex = { at: number; items: [string, string][] };
+
 class LunoxScansPlugin implements Plugin.PluginBase {
   id = 'lunoxScans';
   name = 'Lunox Novels';
   icon = 'src/en/lunoxscans/icon.png';
   site = SITE;
-  version = '1.0.0';
+  version = '1.1.0';
+
+  private indexLoad: Promise<SearchIndex> | null = null;
+  private preloaded: Record<string, { html: string; at: number }> = {};
+  private loading: Record<string, Promise<string> | undefined> = {};
 
   imageRequestInit: Plugin.ImageRequestInit = {
     headers: { Referer: SITE + '/' },
@@ -91,7 +104,8 @@ class LunoxScansPlugin implements Plugin.PluginBase {
   private async html(path: string): Promise<string> {
     const res = await fetchApi(SITE + path);
     if (!res.ok) throw new Error('Lunox Novels error ' + res.status);
-    return res.text();
+    // Scripts are most of each page; dropping them makes parsing much faster.
+    return (await res.text()).replace(/<script[\s\S]*?<\/script>/gi, '');
   }
 
   private parseList(html: string): Plugin.NovelItem[] {
@@ -125,24 +139,96 @@ class LunoxScansPlugin implements Plugin.PluginBase {
     return this.parseList(await this.html(base + page + '?m_orderby=' + sort));
   }
 
-  private async search(term: string, pageNo: number): Promise<Plugin.NovelItem[]> {
-    const page = pageNo > 1 ? '/page/' + pageNo + '/' : '/';
-    return this.parseList(
-      await this.html(page + '?s=' + encodeURIComponent(term) + '&post_type=wp-manga'),
-    );
+  /** Downloads the site's list of novels and saves it on the device. */
+  private loadIndex(): Promise<SearchIndex> {
+    if (this.indexLoad) return this.indexLoad;
+    this.indexLoad = (async () => {
+      try {
+        const res = await fetchApi(SITE + '/wp-manga-sitemap.xml');
+        if (!res.ok) throw new Error('Lunox Novels error ' + res.status);
+        const items: [string, string][] = [];
+        (await res.text()).split('<url>').forEach(entry => {
+          const slug = entry.match(/<loc>[^<]*\/series\/([^/<]+)\/?<\/loc>/);
+          const image = entry.match(/<image:loc>([^<]+)<\/image:loc>/);
+          if (slug) items.push([slug[1], image ? image[1] : '']);
+        });
+        if (!items.length) throw new Error('Empty novel list');
+        const index: SearchIndex = { at: Date.now(), items };
+        storage.set(INDEX_KEY, index);
+        return index;
+      } finally {
+        this.indexLoad = null;
+      }
+    })();
+    return this.indexLoad;
+  }
+
+  /** Never waits for a download: missing or old lists refresh in the background. */
+  private getIndex(): SearchIndex | null {
+    const saved: SearchIndex | undefined = storage.get(INDEX_KEY);
+    const usable = !!saved && !!saved.items && saved.items.length > 0;
+    if (!usable || Date.now() - (saved as SearchIndex).at > INDEX_MAX_AGE) {
+      this.loadIndex().catch(() => undefined);
+    }
+    return usable ? (saved as SearchIndex) : null;
+  }
+
+  private titleFromSlug(slug: string): string {
+    return slug
+      .split('-')
+      .filter(Boolean)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+  }
+
+  /** The site's own search, for novels newer than the saved list. */
+  private async liveSearch(term: string): Promise<Plugin.NovelItem[]> {
+    const body = new FormData();
+    body.append('action', 'wp-manga-search-manga');
+    body.append('title', term);
+    const res = await fetchApi(SITE + '/wp-admin/admin-ajax.php', { method: 'POST', body });
+    if (!res.ok) throw new Error('Lunox Novels error ' + res.status);
+    const json = await res.json();
+    if (!json.success || !Array.isArray(json.data)) return [];
+    return json.data
+      .filter((r: { title?: string; url?: string }) => r.title && r.url)
+      .map((r: { title: string; url: string }) => ({
+        name: parseHTML('<p>' + r.title + '</p>')('p').text(),
+        path: this.toPath(r.url),
+        cover: defaultCover,
+      }));
   }
 
   async searchNovels(searchTerm: string, pageNo: number): Promise<Plugin.NovelItem[]> {
+    // Every match is returned on the first page.
+    if (pageNo > 1) return [];
     const term = searchTerm.trim();
+    const words = term
+      .toLowerCase()
+      .replace(/['’‘`]/g, '')
+      .split(/[^a-z0-9]+/)
+      .filter(Boolean);
     if (!term) return [];
-    const found = await this.search(term, pageNo);
-    if (found.length || pageNo > 1) return found;
-    // Retry with the longest word when the exact phrase finds nothing.
-    const longest = term
-      .split(/[^A-Za-z0-9]+/)
-      .filter(w => w.length > 2)
-      .sort((a, b) => b.length - a.length)[0];
-    return longest && longest !== term ? this.search(longest, 1) : found;
+    // The saved list only has Latin letters, so other scripts use the site.
+    if (!words.length) return this.liveSearch(term);
+
+    const index = this.getIndex();
+    if (index) {
+      const phrase = words.join('-');
+      const matches = index.items
+        .filter(item => words.every(w => item[0].indexOf(w) >= 0))
+        .sort((a, b) => Number(b[0].indexOf(phrase) >= 0) - Number(a[0].indexOf(phrase) >= 0));
+      if (matches.length) {
+        return matches.map(item => ({
+          name: this.titleFromSlug(item[0]),
+          path: 'series/' + item[0] + '/',
+          cover: item[1] || defaultCover,
+        }));
+      }
+      // A list this recent already has every novel.
+      if (Date.now() - index.at < INDEX_TRUSTED_AGE) return [];
+    }
+    return this.liveSearch(term);
   }
 
   private mapStatus(s: string): string {
@@ -225,6 +311,50 @@ class LunoxScansPlugin implements Plugin.PluginBase {
 
   async parseChapter(chapterPath: string): Promise<string> {
     if (chapterPath.indexOf('?premium=') >= 0) return LOCKED_NOTE;
+    const html = await this.readChapter(chapterPath);
+    this.preloadNext(chapterPath, html);
+    return html;
+  }
+
+  /** Uses a preloaded copy or a request already running when there is one. */
+  private readChapter(path: string): Promise<string> {
+    const saved = this.preloaded[path];
+    delete this.preloaded[path];
+    if (saved && Date.now() - saved.at < PRELOAD_MAX_AGE) return Promise.resolve(saved.html);
+    const running = this.loading[path];
+    if (running) return running;
+    const load = this.fetchChapter(path).then(
+      html => {
+        delete this.loading[path];
+        return html;
+      },
+      error => {
+        delete this.loading[path];
+        throw error;
+      },
+    );
+    this.loading[path] = load;
+    return load;
+  }
+
+  /** Loads the next chapter in the background while this one is being read. */
+  private preloadNext(path: string, html: string): void {
+    if (html === LOCKED_NOTE) return;
+    const match = path.match(/^(.*\/chapter-)(\d+)\/$/);
+    if (!match) return;
+    const next = match[1] + (Number(match[2]) + 1) + '/';
+    if (this.preloaded[next] || this.loading[next]) return;
+    this.readChapter(next)
+      .then(text => {
+        // Locked chapters aren't kept, so an unlock on the site shows up.
+        if (text === LOCKED_NOTE) return;
+        Object.keys(this.preloaded).forEach(key => delete this.preloaded[key]);
+        this.preloaded[next] = { html: text, at: Date.now() };
+      })
+      .catch(() => undefined);
+  }
+
+  private async fetchChapter(chapterPath: string): Promise<string> {
     const $ = parseHTML(await this.html('/' + chapterPath));
     const reading = $('.reading-content').first();
     if (!reading.length) throw new Error('Chapter text not found');
