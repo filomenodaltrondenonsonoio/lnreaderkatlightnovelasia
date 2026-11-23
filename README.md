@@ -11,6 +11,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
 | No Bad Novel | https://www.nobadnovel.com |
 | Boti Translation | https://www.botitranslation.com |
 | Azure Chronicles | https://azurechronicles.com |
+| Nova Translations | https://www.novatls.com |
 
 ## Install in LNReader
 
@@ -20,7 +21,7 @@ A plugin repository for [LNReader](https://github.com/lnreader/lnreader).
    https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.dist/plugins.min.json
    ```
 
-2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia*, *Novels Haven*, *Fenrir Realm (WebView)*, *No Bad Novel*, *Boti Translation* and *Azure Chronicles*.
+2. Open **Browse → Available** and install *Kat Reading Cafe*, *LightNovelAsia*, *Novels Haven*, *Fenrir Realm (WebView)*, *No Bad Novel*, *Boti Translation*, *Azure Chronicles* and *Nova Translations*.
 
 The repository must stay public, or LNReader can't download the plugins.
 
