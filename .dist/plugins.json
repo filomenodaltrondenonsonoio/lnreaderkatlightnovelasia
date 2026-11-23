@@ -1,0 +1,83 @@
+[
+	{
+		"id": "azureChronicles",
+		"name": "Azure Chronicles",
+		"site": "https://azurechronicles.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/azureChronicles.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/azurechronicles/icon.png"
+	},
+	{
+		"id": "botiTranslation",
+		"name": "Boti Translation",
+		"site": "https://www.botitranslation.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/botiTranslation.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/botitranslation/icon.png"
+	},
+	{
+		"id": "fenrirRealmWeb",
+		"name": "Fenrir Realm (WebView)",
+		"site": "https://fenrirealm.com",
+		"lang": "English",
+		"version": "1.3.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/fenrirRealmWeb.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/fenrirrealmweb/icon.png"
+	},
+	{
+		"id": "katReadingCafe",
+		"name": "Kat Reading Cafe",
+		"site": "https://katreadingcafe.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/katReadingCafe.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/katreadingcafe/icon.png"
+	},
+	{
+		"id": "lightNovelAsia",
+		"name": "LightNovelAsia",
+		"site": "https://lightnovelasia.com",
+		"lang": "English",
+		"version": "1.0.3",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/lightNovelAsia.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/lightnovelasia/icon.png"
+	},
+	{
+		"id": "lunoxScans",
+		"name": "Lunox Novels",
+		"site": "https://lunoxscans.com",
+		"lang": "English",
+		"version": "1.1.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/lunoxScans.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/lunoxscans/icon.png"
+	},
+	{
+		"id": "noBadNovel",
+		"name": "No Bad Novel",
+		"site": "https://www.nobadnovel.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/noBadNovel.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/nobadnovel/icon.png"
+	},
+	{
+		"id": "novaTranslations",
+		"name": "Nova Translations",
+		"site": "https://www.novatls.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/novaTranslations.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/novatranslations/icon.png"
+	},
+	{
+		"id": "novelsHaven",
+		"name": "Novels Haven",
+		"site": "https://novelshaventranslations.com",
+		"lang": "English",
+		"version": "1.0.0",
+		"url": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/.js/src/plugins/english/novelsHaven.js",
+		"iconUrl": "https://raw.githubusercontent.com/filomenodaltrondenonsonoio/lnreaderkatlightnovelasia/plugins/v3.0.0/public/static/src/en/novelshaven/icon.png"
+	}
+]
